@@ -61,7 +61,7 @@ TextView t10,t11,t12,t13,t14,t15,t17,t21;
     String email;
     String time;
 
-    String adress="http://localhost/Garbage/lipanampesa_recent/home.php";
+    String adress="http://192.168.43.184/Garbage/lipanampesa_recent/home.php";
     int day;
 
     @Override
@@ -126,12 +126,41 @@ TextView t10,t11,t12,t13,t14,t15,t17,t21;
         location2=(EditText)findViewById(R.id.textView21);
         btn2=(Button)findViewById(R.id.button2);
         t21=(TextView)findViewById(R.id.textView21);
-        String email="http://192.168.43.184/stepsfocharity/lipanampesa_recent/home.php";
+        //String email="http://192.168.43.184/stepsfocharity/lipanampesa_recent/home.php";
+
+
         imageView2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(Garbage_Manager.this, "hey you", Toast.LENGTH_SHORT).show();
-                mpesa(t17.getText().toString(),email);
+//                Toast.makeText(Garbage_Manager.this, "hey you", Toast.LENGTH_SHORT).show();
+
+
+
+                AlertDialog.Builder a = new AlertDialog.Builder(Garbage_Manager.this);
+                a.setMessage("Are you sure you want to pay "+t17.getText()+"? \nNote that the amount will be deducted from your MPESA account");
+                a.setCancelable(true);
+                a.setPositiveButton("Pay with MPESA", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        mpesa(t17.getText().toString(),email);
+                    }
+                });
+
+                a.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+
+                    }
+                });
+                a.show();
+
+
+
+
+
+
             }
         });
 
@@ -369,7 +398,7 @@ TextView t10,t11,t12,t13,t14,t15,t17,t21;
         Double longtitude= location.getLongitude();
 
 
-        Toast.makeText(Garbage_Manager.this, "Locaation updated", Toast.LENGTH_SHORT).show();
+        Toast.makeText(Garbage_Manager.this, "Location updated", Toast.LENGTH_SHORT).show();
 
         Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
         try {
@@ -488,7 +517,7 @@ TextView t10,t11,t12,t13,t14,t15,t17,t21;
 
     }
 
-    public  void mpesa(final String ammount,final String phone)
+    public  void mpesa(final String amount,final String ID)
     {
 
 
@@ -501,7 +530,7 @@ TextView t10,t11,t12,t13,t14,t15,t17,t21;
                 super.onPreExecute();
 
                 pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
-                pDialog.setTitleText("Sending your Conributions");
+                pDialog.setTitleText("Making your Payement");
                 pDialog.setContentText("Please enter your MPESA PIN when prompted");
                 pDialog.setCancelable(false);
                 pDialog.show();
@@ -511,10 +540,10 @@ TextView t10,t11,t12,t13,t14,t15,t17,t21;
             @Override
             protected String doInBackground(Void... v) {
                 HashMap<String,String> params = new HashMap<>();
-                params.put("ammount", ammount );
-                params.put("ID", phone );
+                params.put("ammount", amount );
+                params.put("ID", ID );
                 RequestHandler rh = new RequestHandler();
-                String res = rh.sendPostRequest(email, params);
+                String res = rh.sendPostRequest(adress, params);
                 return res;
 
             }
@@ -522,6 +551,7 @@ TextView t10,t11,t12,t13,t14,t15,t17,t21;
             @Override
             protected void onPostExecute(final String s) {
                 super.onPostExecute(s);
+                Toast.makeText(Garbage_Manager.this, s, Toast.LENGTH_SHORT).show();
                 pDialog.dismiss();
             }
         }
@@ -531,6 +561,10 @@ TextView t10,t11,t12,t13,t14,t15,t17,t21;
 
 
     }
+
+
+
+
 
 
     @Override
